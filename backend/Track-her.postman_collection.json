@@ -275,14 +275,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{localhost}}/api/health/67cbf727dc7da173fae7bf9d",
+							"raw": "{{localhost}}/api/health/67cbf68a4c890b39e6cc55e7",
 							"host": [
 								"{{localhost}}"
 							],
 							"path": [
 								"api",
 								"health",
-								"67cbf727dc7da173fae7bf9d"
+								"67cbf68a4c890b39e6cc55e7"
 							]
 						}
 					},
@@ -294,14 +294,14 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{localhost}}/api/health/67cbf727dc7da173fae7bf9d",
+							"raw": "{{localhost}}/api/health/67cbf68a4c890b39e6cc55e7",
 							"host": [
 								"{{localhost}}"
 							],
 							"path": [
 								"api",
 								"health",
-								"67cbf727dc7da173fae7bf9d"
+								"67cbf68a4c890b39e6cc55e7"
 							]
 						}
 					},
@@ -716,6 +716,87 @@
 								"partner",
 								"revoke",
 								"67cc16a25818c3442368e4a4"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "reports",
+			"item": [
+				{
+					"name": "{{localhost}}/api/report/activity",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}/api/report/activity",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"report",
+								"activity"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{localhost}}/api/report/summary",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}/api/report/summary",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"report",
+								"summary"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{localhost}}/api/report/symptoms",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}/api/report/symptoms",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"report",
+								"symptoms"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{localhost}}/api/report/periods",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}/api/report/health-metrics",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"report",
+								"health-metrics"
 							]
 						}
 					},

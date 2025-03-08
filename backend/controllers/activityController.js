@@ -5,7 +5,7 @@ exports.logActivity = async (req, res) => {
     const { date, type, duration, details, protectionUsed } = req.body;
     const userId = req.user.id;
 
-    let used = type === "sexual activity" && protectionUsed ? true : false;
+    let used = type === "sexual activity" ? !!protectionUsed : false;
 
     const activity = new Activity({
       user: userId,
@@ -41,6 +41,10 @@ exports.getActivityHistory = async (req, res) => {
 exports.getActivityById = async (req, res) => {
   try {
     const activity = await Activity.findById(req.params.id);
+
+    if (activity.user.toString() !== req.user.id) {
+      return res.status(403).json({ message: "Unauthorized access" });
+    }
 
     if (!activity) {
       return res.status(404).json({ message: "Activity not found" });

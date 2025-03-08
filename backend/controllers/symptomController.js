@@ -27,7 +27,7 @@ const getSymptomHistory = async (req, res) => {
     const userId = req.user.id;
     const symptoms = await Symptom.find({ user: userId }).sort({ date: -1 });
 
-    res.status(200).json({symptoms});
+    res.status(200).json({ symptoms });
   } catch (error) {
     res.status(500).json({
       message: "Error fetching symptom history",

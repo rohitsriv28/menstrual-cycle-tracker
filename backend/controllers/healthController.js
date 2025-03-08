@@ -5,11 +5,15 @@ const logHealthMetric = async (req, res) => {
     const { metricType, value, notes } = req.body;
     const userId = req.user.id;
 
-    if (!metricType || !value) {
+    if (!metricType || value === undefined) {
       return res
         .status(400)
         .json({ message: "Metric type and value are required" });
     }
+
+    // if (typeof value !== "number") {
+    //   return res.status(400).json({ message: "Value must be a number" });
+    // }
 
     const healthMetric = new HealthMetric({
       user: userId,
@@ -17,8 +21,8 @@ const logHealthMetric = async (req, res) => {
       value,
       notes,
     });
-
     await healthMetric.save();
+
     res.status(201).json(healthMetric);
   } catch (error) {
     res
@@ -30,10 +34,9 @@ const logHealthMetric = async (req, res) => {
 const getHealthMetrics = async (req, res) => {
   try {
     const userId = req.user.id;
-    const metrics = await HealthMetric.find({ user: userId }).sort({
-      date: -1,
-    });
-
+    const metrics = await HealthMetric.find({ user: userId })
+      .sort({ date: -1 })
+      .lean();
     res.status(200).json({ metrics });
   } catch (error) {
     res
@@ -48,22 +51,19 @@ const updateHealthMetric = async (req, res) => {
     const userId = req.user.id;
 
     let metric = await HealthMetric.findById(req.params.id);
-    if (!metric) {
+    if (!metric)
       return res.status(404).json({ message: "Health metric not found" });
-    }
 
-    if (metric.user.toString() !== userId) {
-      return res
-        .status(403)
-        .json({ message: "Not authorized to update this metric" });
-    }
+    if (!metric.user.equals(userId))
+      return res.status(403).json({ message: "Not authorized" });
 
-    metric.metricType = metricType || metric.metricType;
-    metric.value = value || metric.value;
-    metric.notes = notes || metric.notes;
+    const updatedMetric = await HealthMetric.findByIdAndUpdate(
+      req.params.id,
+      { metricType, value, notes },
+      { new: true, runValidators: true }
+    );
 
-    await metric.save();
-    res.status(200).json(metric);
+    res.status(200).json(updatedMetric);
   } catch (error) {
     res
       .status(500)
@@ -76,15 +76,11 @@ const deleteHealthMetric = async (req, res) => {
     const userId = req.user.id;
 
     const metric = await HealthMetric.findById(req.params.id);
-    if (!metric) {
+    if (!metric)
       return res.status(404).json({ message: "Health metric not found" });
-    }
 
-    if (metric.user.toString() !== userId) {
-      return res
-        .status(403)
-        .json({ message: "Not authorized to delete this metric" });
-    }
+    if (!metric.user.equals(userId))
+      return res.status(403).json({ message: "Not authorized" });
 
     await metric.deleteOne();
     res.status(200).json({ message: "Health metric deleted successfully" });

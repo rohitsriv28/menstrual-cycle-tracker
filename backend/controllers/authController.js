@@ -4,7 +4,7 @@ const bcryptjs = require("bcryptjs");
 
 const generateAccessToken = (payload) => {
   return jwt.sign({ user: payload }, process.env.ACCESS_TOKEN_SECRET, {
-    expiresIn: "15d",
+    expiresIn: "15m",
   });
 };
 
@@ -29,20 +29,7 @@ exports.register = async (req, res) => {
 
     await user.save();
 
-    // console.log(user);
-
-    // const accessToken = generateAccessToken(user);
-    // const refreshToken = generateRefreshToken(user);
-
-    // user.refreshToken = refreshToken;
-    await user.save();
-
-    // res.status(201).json({
-    //   message: "User registered successfully",
-    //   accessToken,
-    //   refreshToken,
-    //   user,
-    // });
+    res.status(201).json({ message: "User registered successfully" });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
@@ -91,7 +78,6 @@ exports.login = async (req, res) => {
 exports.refreshToken = async (req, res) => {
   try {
     const refreshToken = req.cookies.refreshToken;
-
     if (!refreshToken)
       return res.status(401).json({ message: "No refresh token provided" });
 
@@ -104,7 +90,7 @@ exports.refreshToken = async (req, res) => {
       process.env.REFRESH_TOKEN_SECRET,
       (err, decoded) => {
         if (err)
-          return res.status(403).json({ message: "Invalid refresh token" });
+          return res.status(403).json({ message: "Refresh token expired" });
 
         const accessToken = generateAccessToken(decoded.user);
         res.json({ accessToken });
@@ -117,8 +103,17 @@ exports.refreshToken = async (req, res) => {
 
 exports.logout = async (req, res) => {
   try {
-    req.user.refreshToken = null;
-    await req.user.save();
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    user.refreshToken = null;
+    await user.save();
+
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      sameSite: "None",
+      secure: true,
+    });
     res.json({ message: "Logged out successfully" });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
@@ -127,16 +122,14 @@ exports.logout = async (req, res) => {
 
 exports.getProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select("-password");
+    const user = await User.findById(req.user.id).select("-password").lean();
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    let payload = {
+    res.status(200).json({
       profile: user.profile,
       id: user._id,
       email: user.email,
-    };
-
-    res.status(200).json(payload);
+    });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }

@@ -12,6 +12,23 @@ exports.logPeriod = async (req, res) => {
         .json({ message: "Start date and end date are required" });
     }
 
+    if (new Date(startDate) > new Date(endDate)) {
+      return res
+        .status(400)
+        .json({ message: "Start date must be before end date" });
+    }
+
+    const overlappingPeriod = await Period.findOne({
+      user: userId,
+      $or: [{ startDate: { $lte: endDate }, endDate: { $gte: startDate } }],
+    });
+
+    if (overlappingPeriod) {
+      return res
+        .status(400)
+        .json({ message: "This period overlaps with an existing entry." });
+    }
+
     const period = new Period({
       user: userId,
       startDate,
@@ -44,7 +61,7 @@ exports.predictNextPeriod = async (req, res) => {
     // Get periods sorted from newest to oldest
     const periods = await Period.find({ user: userId })
       .sort({ startDate: -1 })
-      .limit(3);
+      .limit(6);
 
     if (periods.length < 2) {
       return res
@@ -66,6 +83,7 @@ exports.predictNextPeriod = async (req, res) => {
     }
 
     const avgCycleLength = Math.round(totalDays / (periods.length - 1));
+    await User.findByIdAndUpdate(userId, { cycleLength: avgCycleLength });
 
     // Calculate next period date by adding avgCycleLength days to the most recent period
     const lastPeriod = periods[0];
@@ -134,10 +152,27 @@ exports.updatePeriod = async (req, res) => {
       return res.status(404).json({ message: "Period log not found" });
     }
 
+    if (new Date(startDate) > new Date(endDate)) {
+      return res
+        .status(400)
+        .json({ message: "Start date must be before end date" });
+    }
+
     if (String(period.user) !== req.user.id) {
       return res
         .status(403)
         .json({ message: "Not authorized to update this log" });
+    }
+
+    const overlappingPeriod = await Period.findOne({
+      user: userId,
+      $or: [{ startDate: { $lte: endDate }, endDate: { $gte: startDate } }],
+    });
+
+    if (overlappingPeriod) {
+      return res
+        .status(400)
+        .json({ message: "This period overlaps with an existing entry." });
     }
 
     period.startDate = startDate || period.startDate;

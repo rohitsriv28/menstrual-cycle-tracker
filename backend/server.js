@@ -9,6 +9,7 @@ const healthRoutes = require("./routes/healthRoutes");
 const partnerRoutes = require("./routes/partnerRoutes");
 const symptomRoutes = require("./routes/symptomRoutes");
 const periodRoutes = require("./routes/periodRoutes");
+const reportsRoutes = require("./routes/reportsRoutes");
 // const healthRoutes = require("./routes/healthRoutes");
 
 connectDB();
@@ -30,6 +31,7 @@ app.use("/api/health", healthRoutes);
 app.use("/api/partner", partnerRoutes);
 app.use("/api/symptoms", symptomRoutes);
 app.use("/api/period", periodRoutes);
+app.use("/api/report", reportsRoutes);
 
 const PORT = process.env.PORT;
 

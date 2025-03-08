@@ -8,6 +8,7 @@ const UserSchema = new mongoose.Schema(
       required: [true, "Please provide an email"],
       unique: true,
       lowercase: true,
+      index: true,
     },
     password: {
       type: String,
@@ -23,6 +24,7 @@ const UserSchema = new mongoose.Schema(
       age: {
         type: Number,
         required: [true, "Please provide an age"],
+        min: [13, "Age must be at least 13"],
       },
       profilePic: {
         type: String,
@@ -33,8 +35,8 @@ const UserSchema = new mongoose.Schema(
     cycleLength: {
       type: Number,
       default: 28,
-      min: [21, "Cycle length must be at least 21 days"],
-      max: [35, "Cycle length must be at most 35 days"],
+      // min: [21, "Cycle length must be at least 21 days"],
+      // max: [35, "Cycle length must be at most 35 days"],
     },
   },
   { timestamps: true }
