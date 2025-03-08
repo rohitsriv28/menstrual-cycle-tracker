@@ -1,0 +1,759 @@
+{
+	"info": {
+		"_postman_id": "d74de518-ef65-4793-b8ee-4c04e56c3be2",
+		"name": "Track-her",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "31891393"
+	},
+	"item": [
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "{{localhost}}/api/auth/register",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"rohitraj2003ind@gmail.com\",\n    \"password\":\"rohit@123\",\n    \"name\":\"Mandip Shah\",\n    \"age\":69\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localhost}}/api/auth/register",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{localhost}}/api/auth/login",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"mandipshah3@gmail.com\",\n    \"password\":\"Mk@222325\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localhost}}/api/auth/login",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{localhost}}/api/auth/refresh-token",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}/api/auth/refresh-token",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"refresh-token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{localhost}}/api/auth/profile",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}/api/auth/profile",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "activity",
+			"item": [
+				{
+					"name": "{{localhost}}/api/activities/log",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    // \"date\": \"2025-03-08\", \n    \"type\": \"sexual activity\", \n    \"duration\":30, \n    \"details\":\"\",\n    \"protectionUsed\":true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localhost}}/api/activities/log",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"activities",
+								"log"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{localhost}}/api/activities/history",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}/api/activities/history",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"activities",
+								"history"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{localhost}}/api/activities/67cbf23846b66ea837529b70",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}/api/activities/67cbf23846b66ea837529b70",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"activities",
+								"67cbf23846b66ea837529b70"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{localhost}}/api/activities/67cbf23846b66ea837529b70",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"protectionUsed\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localhost}}/api/activities/67cbf21946b66ea837529b6d",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"activities",
+								"67cbf21946b66ea837529b6d"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "health",
+			"item": [
+				{
+					"name": "{{localhost}}/api/health/log",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "// {\n//     \"metricType\":\"water_intake\", \n//     \"value\":200, \n//     \"notes\":\"\"\n// }\n\n{\n    \"metricType\":\"blood_pressure\", \n    \"value\":{\n        \"systolic\": 120,\n        \"diastolic\": 80\n    }, \n    \"notes\":\"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localhost}}/api/health/log",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"health",
+								"log"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{localhost}}/api/health/history",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}/api/health/history",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"health",
+								"history"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{localhost}}/api/health/67cbf727dc7da173fae7bf9d",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"metricType\":\"weight\", \n    \"value\":100, \n    \"notes\":\"BP -> weight\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localhost}}/api/health/67cbf727dc7da173fae7bf9d",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"health",
+								"67cbf727dc7da173fae7bf9d"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{localhost}}/api/health/67cbf727dc7da173fae7bf9d",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}/api/health/67cbf727dc7da173fae7bf9d",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"health",
+								"67cbf727dc7da173fae7bf9d"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "periods",
+			"item": [
+				{
+					"name": "{{localhost}}/api/period/log",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"startDate\": \"2024-3-6\",\n    \"endDate\": \"2024-3-10\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localhost}}/api/period/log",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"period",
+								"log"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{localhost}}/api/period/history",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}/api/period/history",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"period",
+								"history"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{localhost}}/api/period/predict",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}/api/period/predict",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"period",
+								"predict"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{localhost}}/api/period/fertile-window",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}/api/period/fertile-window",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"period",
+								"fertile-window"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{localhost}}/api/period/67cbfad27950b80450933425",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"startDate\": \"2024-03-06T18:15:00.000Z\",\n    \"endDate\": \"2024-03-09T18:15:00.000Z\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localhost}}/api/period/67cbfad27950b80450933425",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"period",
+								"67cbfad27950b80450933425"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{localhost}}/api/period/67cbfad27950b80450933425",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}/api/period/67cbfad27950b80450933425",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"period",
+								"67cbfad27950b80450933425"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "symptoms",
+			"item": [
+				{
+					"name": "{{localhost}}/api/symptoms/log",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"symptomType\":\"bloating\",\n    \"severity\":\"moderate\",\n    \"mood\":\"happy\",\n    \"notes\":\"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localhost}}/api/symptoms/log",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"symptoms",
+								"log"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{localhost}}/api/symptoms/insights",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}/api/symptoms/insights",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"symptoms",
+								"insights"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{localhost}}/api/symptoms/history",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}/api/symptoms/history",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"symptoms",
+								"history"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{localhost}}/api/symptoms/67cc01b6a4d6a40627ec52a0",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}/api/symptoms/67cc01b6a4d6a40627ec52a0",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"symptoms",
+								"67cc01b6a4d6a40627ec52a0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{localhost}}/api/symptoms/67cc01b6a4d6a40627ec52a0",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"symptomType\": \"mood_swings\",\n    \"severity\": \"severe\",\n    \"mood\": \"happy\",\n    \"notes\": \"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localhost}}/api/symptoms/67cc01b6a4d6a40627ec52a0",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"symptoms",
+								"67cc01b6a4d6a40627ec52a0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{localhost}}/api/symptoms/67cb37d2ac32b1cabcb10eed",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}/api/symptoms/67cc016da4d6a40627ec5298",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"symptoms",
+								"67cc016da4d6a40627ec5298"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "partner",
+			"item": [
+				{
+					"name": "{{localhost}}/api/partner/share",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"partnerEmail\":\"rohitraj2003ind@gmail.com\",\n    \"sharedOptions\":{\n        \"periodDates\": true,\n        \"symptoms\": false,\n        \"activities\":true,\n        \"healthMetrics\":false\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localhost}}/api/partner/share",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"partner",
+								"share"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{localhost}}/api/partner/mypartner",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}/api/partner/mypartner",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"partner",
+								"mypartner"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{localhost}}/api/partner/data",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}/api/partner/data",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"partner",
+								"data"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{localhost}}/api/partner/data/03036d8c39c72dcfdadc466e7f0dc02eef90a69104208d19e4b03a033d351b06",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}/api/partner/data/fb2ca46e6a7a54c7099fb0a57a5c20ecc38b58bb81cfdf5d0631946cdd2d19fe",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"partner",
+								"data",
+								"fb2ca46e6a7a54c7099fb0a57a5c20ecc38b58bb81cfdf5d0631946cdd2d19fe"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{localhost}}/api/partner/update/67cc16a25818c3442368e4a4",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"sharedOptions\":{\n        \"periodDates\": true,\n        \"symptoms\": true,\n        \"activities\":true,\n        \"healthMetrics\":false\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localhost}}/api/partner/update/67cc16a25818c3442368e4a4",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"partner",
+								"update",
+								"67cc16a25818c3442368e4a4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{localhost}}/api/partner/update/67cc16a25818c3442368e4a4",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}/api/partner/revoke/67cc16a25818c3442368e4a4",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"partner",
+								"revoke",
+								"67cc16a25818c3442368e4a4"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InByb2ZpbGUiOnsibmFtZSI6Ik1hbmRpcCBTaGFoIiwiYWdlIjo2OSwicHJvZmlsZVBpYyI6IiJ9LCJpZCI6IjY3Y2IzN2QyYWMzMmIxY2FiY2IxMGVlZCIsImVtYWlsIjoibWFuZGlwc2hhaDNAZ21haWwuY29tIn0sImlhdCI6MTc0MTQyNTA0MSwiZXhwIjoxNzQyNzIxMDQxfQ.N3Z30nwrxPhvzVzofIFUjwLBZg_yB1a5tChSmTJBQiA",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
