@@ -1,5 +1,7 @@
 import { lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
+import Login from "../components/Login";
+import Signup from "../components/Signup";
 
 // Lazy load components
 const Home = lazy(() => import("../pages/Home"));
@@ -15,6 +17,8 @@ const AppRoutes = () => {
     <Suspense fallback={<div className="text-center mt-10">Loading...</div>}>
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
         <Route path="/log-period" element={<LogPeriod />} />
         <Route path="/cycle-prediction" element={<CyclePrediction />} />
         <Route path="/symptoms" element={<Symptoms />} />
