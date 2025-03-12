@@ -1,5 +1,6 @@
 import { useContext, useState } from "react";
 import { PeriodContext } from "../context/PeriodContext";
+import { UserContext } from "../context/UserContext";
 
 const PartnerSharing = () => {
   const {
@@ -10,14 +11,16 @@ const PartnerSharing = () => {
     getCurrentPhase,
   } = useContext(PeriodContext);
 
-  const [sharingOptions, setSharingOptions] = useState({
-    nextPeriod: true,
-    fertileWindow: true,
-    currentPhase: true,
-    historicalData: false,
-    symptoms: false,
-    notifications: false,
-  });
+  const {
+    sharingSettings,
+    updateSharingOptions,
+    createSharingLink,
+    deactivateLink,
+    deleteLink,
+  } = useContext(UserContext);
+
+  // Initialize sharing options from context
+  const [sharingOptions, setSharingOptions] = useState(sharingSettings.options);
 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -27,10 +30,13 @@ const PartnerSharing = () => {
   const [successMessage, setSuccessMessage] = useState("");
 
   const handleOptionChange = (option) => {
-    setSharingOptions({
+    const newOptions = {
       ...sharingOptions,
       [option]: !sharingOptions[option],
-    });
+    };
+    setSharingOptions(newOptions);
+    // Update the options in context as well
+    updateSharingOptions(newOptions);
   };
 
   const validateForm = () => {
@@ -59,28 +65,15 @@ const PartnerSharing = () => {
     setError("");
 
     try {
-      // Here we would normally make an API call to the backend
-      // For now, we'll simulate it with a timeout
+      // Use the createSharingLink function from UserContext
+      const linkData = createSharingLink(password);
 
-      setTimeout(() => {
-        // Create a sharing identifier (in real implementation, this would be a secure token from the backend)
-        const sharingId =
-          Math.random().toString(36).substring(2, 15) +
-          Math.random().toString(36).substring(2, 15);
+      setShareableLinkData(linkData);
+      setLoading(false);
+      setSuccessMessage("Sharing link created successfully!");
 
-        const linkData = {
-          url: `${window.location.origin}/shared/${sharingId}`,
-          expiresInDays: 30,
-          createdAt: new Date().toISOString(),
-        };
-
-        setShareableLinkData(linkData);
-        setLoading(false);
-        setSuccessMessage("Sharing link created successfully!");
-
-        // Reset this message after 5 seconds
-        setTimeout(() => setSuccessMessage(""), 5000);
-      }, 1500);
+      // Reset this message after 5 seconds
+      setTimeout(() => setSuccessMessage(""), 5000);
     } catch (err) {
       setError("Failed to create shareable link. Please try again.");
       setLoading(false);
@@ -101,30 +94,42 @@ const PartnerSharing = () => {
       });
   };
 
+  const handleCreateAnother = () => {
+    setShareableLinkData(null);
+    setPassword("");
+    setConfirmPassword("");
+    setError("");
+  };
+
+  const handleManageSharing = () => {
+    // Navigate to sharing management page
+    // In a real implementation, you would use React Router here
+    window.location.href = "/manage-sharing";
+  };
+
+  // Helper function to format labels
+  const formatLabel = (key) => {
+    return key
+      .replace(/([A-Z])/g, " $1")
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  };
+
   return (
-    <div className="max-w-lg mx-auto mt-10 p-8 bg-white rounded-xl shadow-lg">
-      <div className="flex items-center mb-6">
-        <div className="w-10 h-10 rounded-full bg-pink-100 flex items-center justify-center mr-3">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6 text-pink-500"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
-            />
-          </svg>
+    <div className="max-w-md mx-auto my-8 p-6 bg-white rounded-lg shadow-md">
+      <h2 className="text-2xl font-bold mb-6 text-pink-600 text-center">
+        Partner Sharing
+      </h2>
+
+      {successMessage && (
+        <div className="mb-6 p-3 bg-green-100 border border-green-400 text-green-700 rounded">
+          {successMessage}
         </div>
-        <h2 className="text-2xl font-bold text-gray-800">Partner Sharing</h2>
-      </div>
+      )}
 
       {!shareableLinkData ? (
-        <>
+        <form className="space-y-6">
           <div className="mb-6">
             <p className="text-gray-600 mb-4">
               Share your cycle information with your partner. Select what you
@@ -140,130 +145,100 @@ const PartnerSharing = () => {
             </div>
           </div>
 
-          <div className="mb-6">
-            <h3 className="text-lg font-medium text-gray-800 mb-3">
+          {/* Sharing Options Section */}
+          <div className="bg-pink-50 p-4 rounded-lg">
+            <h3 className="text-lg font-semibold mb-3 text-pink-700">
               What would you like to share?
             </h3>
 
             <div className="space-y-3">
-              <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                <div>
-                  <p className="font-medium text-gray-700">Next Period Date</p>
-                  <p className="text-sm text-gray-500">
-                    When your next period is expected to start
-                  </p>
-                </div>
+              <div className="flex items-center p-2 hover:bg-pink-100 rounded-md transition-colors">
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
                     type="checkbox"
-                    className="sr-only peer"
                     checked={sharingOptions.nextPeriod}
                     onChange={() => handleOptionChange("nextPeriod")}
+                    className="sr-only peer"
                   />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-pink-500"></div>
+                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-pink-600"></div>
+                  <span className="ml-3 font-medium">Next Period Date</span>
                 </label>
               </div>
 
-              <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                <div>
-                  <p className="font-medium text-gray-700">Fertile Window</p>
-                  <p className="text-sm text-gray-500">
-                    When you're most likely to conceive
-                  </p>
-                </div>
+              <div className="flex items-center p-2 hover:bg-pink-100 rounded-md transition-colors">
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
                     type="checkbox"
-                    className="sr-only peer"
                     checked={sharingOptions.fertileWindow}
                     onChange={() => handleOptionChange("fertileWindow")}
+                    className="sr-only peer"
                   />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-pink-500"></div>
+                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-pink-600"></div>
+                  <span className="ml-3 font-medium">Fertile Window</span>
                 </label>
               </div>
 
-              <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                <div>
-                  <p className="font-medium text-gray-700">
-                    Current Cycle Phase
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    What phase of your cycle you're in right now
-                  </p>
-                </div>
+              <div className="flex items-center p-2 hover:bg-pink-100 rounded-md transition-colors">
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
                     type="checkbox"
-                    className="sr-only peer"
                     checked={sharingOptions.currentPhase}
                     onChange={() => handleOptionChange("currentPhase")}
+                    className="sr-only peer"
                   />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-pink-500"></div>
+                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-pink-600"></div>
+                  <span className="ml-3 font-medium">Current Cycle Phase</span>
                 </label>
               </div>
 
-              <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                <div>
-                  <p className="font-medium text-gray-700">
-                    Historical Period Data
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    Your past period dates and durations
-                  </p>
-                </div>
+              <div className="flex items-center p-2 hover:bg-pink-100 rounded-md transition-colors">
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
                     type="checkbox"
-                    className="sr-only peer"
                     checked={sharingOptions.historicalData}
                     onChange={() => handleOptionChange("historicalData")}
+                    className="sr-only peer"
                   />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-pink-500"></div>
+                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-pink-600"></div>
+                  <span className="ml-3 font-medium">
+                    Historical Period Data
+                  </span>
                 </label>
               </div>
 
-              <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                <div>
-                  <p className="font-medium text-gray-700">Symptoms</p>
-                  <p className="text-sm text-gray-500">
-                    Symptoms you've recorded during your periods
-                  </p>
-                </div>
+              <div className="flex items-center p-2 hover:bg-pink-100 rounded-md transition-colors">
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
                     type="checkbox"
-                    className="sr-only peer"
                     checked={sharingOptions.symptoms}
                     onChange={() => handleOptionChange("symptoms")}
+                    className="sr-only peer"
                   />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-pink-500"></div>
+                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-pink-600"></div>
+                  <span className="ml-3 font-medium">Symptoms</span>
                 </label>
               </div>
 
-              <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                <div>
-                  <p className="font-medium text-gray-700">
-                    Real-time Notifications
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    Allow your partner to receive notifications about your cycle
-                  </p>
-                </div>
+              <div className="flex items-center p-2 hover:bg-pink-100 rounded-md transition-colors">
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
                     type="checkbox"
-                    className="sr-only peer"
                     checked={sharingOptions.notifications}
                     onChange={() => handleOptionChange("notifications")}
+                    className="sr-only peer"
                   />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-pink-500"></div>
+                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-pink-600"></div>
+                  <span className="ml-3 font-medium">
+                    Real-time Notifications
+                  </span>
                 </label>
               </div>
             </div>
           </div>
 
-          <div className="mb-6">
-            <h3 className="text-lg font-medium text-gray-800 mb-3">
+          {/* Password Section */}
+          <div className="bg-purple-50 p-4 rounded-lg">
+            <h3 className="text-lg font-semibold mb-3 text-purple-700">
               Set Access Password
             </h3>
             <p className="text-sm text-gray-600 mb-4">
@@ -273,28 +248,26 @@ const PartnerSharing = () => {
 
             <div className="space-y-4">
               <div>
-                <label className="block text-gray-700 font-medium mb-2">
-                  Password
-                </label>
+                <label className="block mb-2 font-medium">Password</label>
                 <input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="border border-gray-300 p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                  className="border border-gray-300 p-2 w-full rounded-md focus:ring-purple-500 focus:border-purple-500"
                   placeholder="Enter a secure password"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-gray-700 font-medium mb-2">
+                <label className="block mb-2 font-medium">
                   Confirm Password
                 </label>
                 <input
                   type="password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="border border-gray-300 p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                  className="border border-gray-300 p-2 w-full rounded-md focus:ring-purple-500 focus:border-purple-500"
                   placeholder="Confirm your password"
                   required
                 />
@@ -303,96 +276,93 @@ const PartnerSharing = () => {
           </div>
 
           {error && (
-            <div className="p-3 bg-red-50 border border-red-200 rounded-lg mb-6">
-              <p className="text-sm text-red-500">{error}</p>
-            </div>
-          )}
-
-          {successMessage && (
-            <div className="p-3 bg-green-50 border border-green-200 rounded-lg mb-6">
-              <p className="text-sm text-green-500">{successMessage}</p>
+            <div className="p-3 bg-red-50 border border-red-400 text-red-700 rounded">
+              {error}
             </div>
           )}
 
           <button
+            type="button"
             onClick={generateShareableLink}
-            className={`bg-pink-500 text-white py-3 px-4 rounded-lg hover:bg-pink-600 transition w-full flex justify-center items-center ${
-              loading ? "opacity-75" : ""
-            }`}
+            className="w-full py-3 px-4 bg-gradient-to-r from-pink-500 to-purple-600 text-white font-medium rounded-md hover:from-pink-600 hover:to-purple-700 transition-colors focus:outline-none focus:ring-4 focus:ring-pink-300"
             disabled={loading}
           >
             {loading ? (
-              <svg
-                className="animate-spin h-5 w-5 text-white"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                ></circle>
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                ></path>
-              </svg>
+              <div className="flex justify-center items-center">
+                <svg
+                  className="animate-spin h-5 w-5 mr-3 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
+                </svg>
+                Creating Link...
+              </div>
             ) : (
               "Create Shareable Link"
             )}
           </button>
-        </>
+        </form>
       ) : (
-        <div className="text-center">
-          <div className="mb-6">
-            <div className="bg-green-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-8 w-8 text-green-500"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
+        // Link Created Success View
+        <div className="space-y-6">
+          <div className="bg-green-50 p-4 rounded-lg text-center">
+            <div className="flex justify-center mb-4">
+              <div className="bg-green-100 rounded-full w-16 h-16 flex items-center justify-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-8 w-8 text-green-500"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+              </div>
             </div>
             <h3 className="text-xl font-bold text-gray-800 mb-2">
               Sharing Link Created!
             </h3>
-            <p className="text-gray-600 mb-6">
+            <p className="text-gray-600">
               Your link expires in 30 days. Anyone with this link and password
               can view your selected cycle information.
             </p>
           </div>
 
-          <div className="bg-gray-50 p-4 rounded-lg mb-6">
-            <p className="text-gray-800 font-medium mb-2">
-              Your shareable link:
-            </p>
-            <div className="flex items-center">
+          <div className="bg-gray-50 p-4 rounded-lg">
+            <p className="font-medium mb-2">Your shareable link:</p>
+            <div className="flex">
               <input
                 type="text"
                 value={shareableLinkData.url}
-                className="border border-gray-300 p-3 w-full rounded-l-lg focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent bg-white text-gray-700"
+                className="border border-gray-300 p-2 w-full rounded-l-md bg-white text-gray-700"
                 readOnly
               />
               <button
                 onClick={copyToClipboard}
-                className="bg-pink-500 text-white p-3 rounded-r-lg hover:bg-pink-600 transition"
+                className="bg-pink-500 text-white p-2 rounded-r-md hover:bg-pink-600 transition"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
+                  className="h-6 w-6"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -408,20 +378,17 @@ const PartnerSharing = () => {
             </div>
           </div>
 
-          {successMessage && (
-            <div className="p-3 bg-green-50 border border-green-200 rounded-lg mb-6">
-              <p className="text-sm text-green-500">{successMessage}</p>
-            </div>
-          )}
-
-          <div className="flex space-x-4">
+          <div className="flex gap-3">
             <button
-              onClick={() => setShareableLinkData(null)}
-              className="flex-1 bg-gray-100 text-gray-700 py-3 px-4 rounded-lg hover:bg-gray-200 transition"
+              onClick={handleCreateAnother}
+              className="flex-1 py-3 px-4 rounded-md border transition-colors bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
             >
               Create Another Link
             </button>
-            <button className="flex-1 bg-pink-500 text-white py-3 px-4 rounded-lg hover:bg-pink-600 transition">
+            <button
+              onClick={handleManageSharing}
+              className="flex-1 py-3 px-4 bg-gradient-to-r from-pink-500 to-purple-600 text-white font-medium rounded-md hover:from-pink-600 hover:to-purple-700 transition-colors"
+            >
               Manage Sharing
             </button>
           </div>

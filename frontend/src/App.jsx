@@ -3,6 +3,7 @@ import Navbar from "./components/Navbar";
 import LoadingSpinner from "./components/LoadingSpinner";
 import AppRoutes from "./routes/AppRoutes";
 import Footer from "./components/Footer";
+import SharedView from "./pages/SharedView";
 
 const App = () => {
   return (
@@ -13,6 +14,7 @@ const App = () => {
           <AppRoutes />
         </Suspense>
       </main>
+      {/* <SharedView /> */}
       <Footer />
     </>
   );
