@@ -7,7 +7,7 @@ import Signup from "../components/Signup";
 const Home = lazy(() => import("../pages/Home"));
 const LogPeriod = lazy(() => import("../pages/LogPeriod"));
 const CyclePrediction = lazy(() => import("../pages/CyclePrediction"));
-const Symptoms = lazy(() => import("../pages/Symptoms"));
+// const Symptoms = lazy(() => import("../pages/Symptoms"));
 const ActivityLog = lazy(() => import("../pages/ActivityLog"));
 const WaterSleepLog = lazy(() => import("../pages/WaterSleepLog"));
 const PartnerSharing = lazy(() => import("../pages/PartnerSharing"));
@@ -21,7 +21,7 @@ const AppRoutes = () => {
         <Route path="/signup" element={<Signup />} />
         <Route path="/log-period" element={<LogPeriod />} />
         <Route path="/cycle-prediction" element={<CyclePrediction />} />
-        <Route path="/symptoms" element={<Symptoms />} />
+        {/* <Route path="/symptoms" element={<Symptoms />} /> */}
         <Route path="/activity-log" element={<ActivityLog />} />
         <Route path="/water-sleep-log" element={<WaterSleepLog />} />
         <Route path="/partner-sharing" element={<PartnerSharing />} />
